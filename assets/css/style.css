@@ -1,0 +1,39 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+header {
+    background-color: #111;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+}
+.grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 2rem;
+}
+.producto {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem;
+    width: 250px;
+    text-align: center;
+}
+.producto img {
+    max-width: 100%;
+    height: auto;
+}
+.producto a {
+    display: inline-block;
+    margin-top: 1rem;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
