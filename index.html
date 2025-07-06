@@ -2,33 +2,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Catálogo Venetian</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="UTF-8">
+  <title>Venetian - Iluminación y Sonido Profesional</title>
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Catálogo de Productos - Venetian</h1>
-    </header>
-    <section class="grid">
-        <div class="producto">
-            <img src="assets/images/mh230n.jpg" alt="VT-MH230N">
-            <h2>VT-MH230N</h2>
-            <p>Cabezal Beam 230W 7R, DMX, 14 colores, 17 gobos, prisma 8x</p>
-            <a href="productos/vt-mh230n.html">Ver más</a>
-        </div>
-        <div class="producto">
-            <img src="assets/images/mh260.jpg" alt="VT-M260">
-            <h2>VT-M260</h2>
-            <p>Beam 260W con prisma doble, rueda de gobos y control DMX</p>
-            <a href="productos/vt-m260.html">Ver más</a>
-        </div>
-        <div class="producto">
-            <img src="assets/images/z1500.jpg" alt="Z-1500">
-            <h2>Z-1500</h2>
-            <p>Máquina de humo 1500W con control remoto y salida de 18.000 ft³/min</p>
-            <a href="productos/z-1500.html">Ver más</a>
-        </div>
-    </section>
+  <header>
+    <div class="logo">VENETIAN</div>
+    <nav>
+      <ul>
+        <li><a href="productos/index.html">Productos</a></li>
+        <li><a href="#">Iluminación</a></li>
+        <li><a href="#">Sonido</a></li>
+        <li><a href="#">Efectos especiales</a></li>
+        <li><a href="#">Accesorios</a></li>
+        <li><a href="resellers/index.html">Distribuidores</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section class="carousel">
+    <div class="slide active" onclick="location.href='productos/vt-mh230n.html'">
+      <img src="assets/images/mh230n.jpg" alt="VT-MH230N">
+      <div class="caption">
+        <h2>VT-MH230N</h2>
+        <p>Beam 230W para escenarios profesionales</p>
+      </div>
+    </div>
+    <div class="slide" onclick="location.href='productos/vt-m260.html'">
+      <img src="assets/images/mh260.jpg" alt="VT-M260">
+      <div class="caption">
+        <h2>VT-M260</h2>
+        <p>Beam 260W con prisma doble y control DMX</p>
+      </div>
+    </div>
+    <div class="slide" onclick="location.href='productos/z-1500.html'">
+      <img src="assets/images/z1500.jpg" alt="Z-1500">
+      <div class="caption">
+        <h2>Z-1500</h2>
+        <p>Máquina de humo 1500W para grandes eventos</p>
+      </div>
+    </div>
+  </section>
+  <script src="assets/js/carousel.js"></script>
 </body>
 </html>
