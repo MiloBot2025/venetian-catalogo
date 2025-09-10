@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QR Pack — Blanco y Negro</title>
+<style>
+  /* Página blanca lista para imprimir */
+  :root{ --ink:#000; --paper:#fff; --mut:#555; }
+  html,body{background:var(--paper); color:var(--ink); margin:0; padding:16px; font:14px/1.4 system-ui, Arial;}
+  h1{font-size:18px; margin:0 0 12px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px;}
+  .card{background:#fff; border:1px solid #ddd; border-radius:8px; padding:10px; text-align:center;}
+  .card img{width:100%; height:auto; display:block; background:#fff;}
+  small{color:var(--mut); word-break:break-all;}
+  @media print{
+    body{padding:0;}
+    .card{border:0; border-radius:0; padding:6px;}
+    h1{display:none;}
+    small{color:#000;}
+  }
+</style>
+</head>
+<body>
+<h1>QR Pack — Negro sobre blanco</h1>
+<div class="grid" id="grid"></div>
+<script>
+  const base = "https://milobot2025.github.io/venetian-catalogo/go.html?id=";
+  const grid = document.getElementById("grid");
+  const total = 20;                // cambiá a 10 si querés sólo 10
+  const size = 512;                // 512px por QR (subí a 1024 si querés más grande)
+  const margin = 16;               // borde blanco recomendado
+  for(let i=1;i<=total;i++){
+    const id = "qr"+String(i).padStart(2,"0");
+    const url = base + id;
+    const qr = "https://api.qrserver.com/v1/create-qr-code/"
+             + `?size=${size}x${size}&margin=${margin}&color=000000&bgcolor=FFFFFF&data=`
+             + encodeURIComponent(url);
+    grid.insertAdjacentHTML("beforeend",
+      `<div class="card">
+         <img src="${qr}" alt="${id}">
+         <div>${id}</div>
+         <small>${url}</small>
+       </div>`);
+  }
+</script>
+</body>
+</html>
