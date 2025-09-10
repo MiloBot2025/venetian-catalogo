@@ -10,6 +10,7 @@
     .wrap{min-height:100%;display:grid;place-items:center;padding:24px}
     .card{max-width:680px;width:100%;background:#111;border:1px solid var(--line);border-radius:16px;padding:22px}
     h1{margin:0 0 6px;font-size:20px} p{margin:6px 0;color:var(--mut)}
+    pre{white-space:pre-wrap;background:#0b0b0b;border:1px solid #2a2a2a;border-radius:12px;padding:10px;color:#ccc}
     a.btn{display:inline-block;margin-top:12px;padding:10px 14px;border:1px solid #2a2a2a;border-radius:12px;color:var(--tx)}
   </style>
 </head>
@@ -19,42 +20,61 @@
       <h1>Redirigiendo…</h1>
       <p id="status">Buscando destino…</p>
       <a id="open" class="btn" href="#" rel="noopener" style="display:none">Abrir ahora</a>
+      <pre id="dbg" style="display:none"></pre>
     </div>
   </div>
 
   <script>
     const qs = new URLSearchParams(location.search);
     const id = qs.get("id");
+    const debug = qs.get("debug") === "1";
     const statusEl = document.getElementById("status");
     const openEl = document.getElementById("open");
+    const dbgEl = document.getElementById("dbg");
 
-    function normalizeUrl(u){
+    function norm(u){
       try{
-        if(/^https?:\\/\\//i.test(u)) return new URL(u);          // absoluta
-        if(/^\\/\\//.test(u))        return new URL('https:'+u);   // //dominio
-        return new URL(u, location.origin);                        // relativa o /absoluta del sitio
+        if(/^https?:\/\//i.test(u)) return new URL(u);       // absoluta
+        if(/^\/\//.test(u))        return new URL('https:'+u);// //host
+        return new URL(u, location.origin);                   // relativa o /ruta
       }catch(e){ return null; }
     }
 
     (async function(){
       if(!id){ statusEl.textContent = "Falta ?id="; return; }
+
       try{
-        const res = await fetch("links.json?cb="+Date.now());
+        const url = "links.json?cb=" + Date.now();
+        const res = await fetch(url, { cache: "no-store" });
         if(!res.ok){ statusEl.textContent = "No se pudo leer links.json"; return; }
+
         const map = await res.json();
-        const raw = (map[id]||"").trim();
+        const raw = (map[id] || "").trim();
         if(!raw){ statusEl.textContent = "Aún no disponible."; return; }
 
-        const dest = normalizeUrl(raw);
+        const dest = norm(raw);
         if(!dest){ statusEl.textContent = "URL inválida en links.json"; return; }
 
-        if(!dest.searchParams.has("via")) dest.searchParams.set("via", "venetianqr");
+        if(!dest.searchParams.has("via")) dest.searchParams.set("via","venetianqr");
+
         openEl.href = dest.toString();
         openEl.style.display = "inline-block";
         statusEl.textContent = "Abriendo destino…";
-        setTimeout(()=>location.replace(dest.toString()), 700);
+
+        if(debug){
+          dbgEl.style.display = "block";
+          dbgEl.textContent = [
+            "id: " + id,
+            "links.json: OK",
+            "raw: " + raw,
+            "dest: " + dest.toString()
+          ].join("\n");
+        }else{
+          setTimeout(()=>location.replace(dest.toString()), 700);
+        }
       }catch(e){
         statusEl.textContent = "Error al cargar links.json";
+        if(debug){ dbgEl.style.display="block"; dbgEl.textContent = String(e); }
       }
     })();
   </script>
