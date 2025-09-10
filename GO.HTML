@@ -23,38 +23,40 @@
   </div>
 
   <script>
-    const id = new URLSearchParams(location.search).get("id");
+    const qs = new URLSearchParams(location.search);
+    const id = qs.get("id");
+    const statusEl = document.getElementById("status");
+    const openEl = document.getElementById("open");
 
-    async function go(){
-      const status = document.getElementById('status');
-      const open = document.getElementById('open');
-
-      if(!id){ status.textContent = 'Falta el parámetro ?id='; return; }
-
+    function normalizeUrl(u){
       try{
-        // cache-buster para que tome la última versión
-        const res = await fetch('links.json?' + Date.now());
-        const map = await res.json();
-        let url = map[id];
-
-        if(!url){
-          status.textContent = 'Aún no disponible. Probá más tarde.';
-          return;
-        }
-
-        const dest = new URL(url);
-        if(!dest.searchParams.has('via')) dest.searchParams.set('via','venetianqr');
-
-        open.href = dest.toString();
-        open.style.display = 'inline-block';
-        status.textContent = 'Abriendo destino…';
-        setTimeout(()=> location.replace(dest.toString()), 800);
-      }catch(e){
-        status.textContent = 'No se pudo leer links.json';
-      }
+        if(/^https?:\\/\\//i.test(u)) return new URL(u);          // absoluta
+        if(/^\\/\\//.test(u))        return new URL('https:'+u);   // //dominio
+        return new URL(u, location.origin);                        // relativa o /absoluta del sitio
+      }catch(e){ return null; }
     }
 
-    go();
+    (async function(){
+      if(!id){ statusEl.textContent = "Falta ?id="; return; }
+      try{
+        const res = await fetch("links.json?cb="+Date.now());
+        if(!res.ok){ statusEl.textContent = "No se pudo leer links.json"; return; }
+        const map = await res.json();
+        const raw = (map[id]||"").trim();
+        if(!raw){ statusEl.textContent = "Aún no disponible."; return; }
+
+        const dest = normalizeUrl(raw);
+        if(!dest){ statusEl.textContent = "URL inválida en links.json"; return; }
+
+        if(!dest.searchParams.has("via")) dest.searchParams.set("via", "venetianqr");
+        openEl.href = dest.toString();
+        openEl.style.display = "inline-block";
+        statusEl.textContent = "Abriendo destino…";
+        setTimeout(()=>location.replace(dest.toString()), 700);
+      }catch(e){
+        statusEl.textContent = "Error al cargar links.json";
+      }
+    })();
   </script>
 </body>
 </html>
