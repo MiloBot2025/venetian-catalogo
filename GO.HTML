@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirigiendo…</title>
+  <style>
+    :root { --bg:#0d0d0e; --tx:#f3f3f3; --mut:#bdbdbd; --line:#222; }
+    html,body{height:100%} body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,Inter,Arial}
+    .wrap{min-height:100%;display:grid;place-items:center;padding:24px}
+    .card{max-width:680px;width:100%;background:#111;border:1px solid var(--line);border-radius:16px;padding:22px}
+    h1{margin:0 0 6px;font-size:20px} p{margin:6px 0;color:var(--mut)}
+    a.btn{display:inline-block;margin-top:12px;padding:10px 14px;border:1px solid #2a2a2a;border-radius:12px;color:var(--tx)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Redirigiendo…</h1>
+      <p id="status">Buscando destino…</p>
+      <a id="open" class="btn" href="#" rel="noopener" style="display:none">Abrir ahora</a>
+    </div>
+  </div>
+
+  <script>
+    const id = new URLSearchParams(location.search).get("id");
+
+    async function go(){
+      const status = document.getElementById('status');
+      const open = document.getElementById('open');
+
+      if(!id){ status.textContent = 'Falta el parámetro ?id='; return; }
+
+      try{
+        // cache-buster para que tome la última versión
+        const res = await fetch('links.json?' + Date.now());
+        const map = await res.json();
+        let url = map[id];
+
+        if(!url){
+          status.textContent = 'Aún no disponible. Probá más tarde.';
+          return;
+        }
+
+        const dest = new URL(url);
+        if(!dest.searchParams.has('via')) dest.searchParams.set('via','venetianqr');
+
+        open.href = dest.toString();
+        open.style.display = 'inline-block';
+        status.textContent = 'Abriendo destino…';
+        setTimeout(()=> location.replace(dest.toString()), 800);
+      }catch(e){
+        status.textContent = 'No se pudo leer links.json';
+      }
+    }
+
+    go();
+  </script>
+</body>
+</html>
