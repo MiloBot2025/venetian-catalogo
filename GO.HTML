@@ -32,11 +32,14 @@
     const openEl = document.getElementById("open");
     const dbgEl = document.getElementById("dbg");
 
+    // Ruta ABSOLUTA a tu JSON en GitHub Pages (evita problemas de rutas)
+    const JSON_URL = "https://milobot2025.github.io/venetian-catalogo/links.json";
+
     function norm(u){
       try{
-        if(/^https?:\/\//i.test(u)) return new URL(u);       // absoluta
-        if(/^\/\//.test(u))        return new URL('https:'+u);// //host
-        return new URL(u, location.origin);                   // relativa o /ruta
+        if(/^https?:\/\//i.test(u)) return new URL(u);         // absoluta
+        if(/^\/\//.test(u))        return new URL('https:'+u); // //host
+        return new URL(u, location.origin);                    // relativa
       }catch(e){ return null; }
     }
 
@@ -44,8 +47,7 @@
       if(!id){ statusEl.textContent = "Falta ?id="; return; }
 
       try{
-        const url = "links.json?cb=" + Date.now();
-        const res = await fetch(url, { cache: "no-store" });
+        const res = await fetch(JSON_URL + "?cb=" + Date.now(), { cache: "no-store" });
         if(!res.ok){ statusEl.textContent = "No se pudo leer links.json"; return; }
 
         const map = await res.json();
@@ -65,7 +67,7 @@
           dbgEl.style.display = "block";
           dbgEl.textContent = [
             "id: " + id,
-            "links.json: OK",
+            "JSON: OK",
             "raw: " + raw,
             "dest: " + dest.toString()
           ].join("\n");
