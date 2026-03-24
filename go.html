@@ -72,7 +72,7 @@
             "dest: " + dest.toString()
           ].join("\n");
         }else{
-          setTimeout(()=>location.replace(dest.toString()), 700);
+          setTimeout(()=>location.replace(dest.toString()), 0);
         }
       }catch(e){
         statusEl.textContent = "Error al cargar links.json";
